@@ -1,0 +1,4 @@
+.env
+*/target
+soft_serve_postgres_data
+data
