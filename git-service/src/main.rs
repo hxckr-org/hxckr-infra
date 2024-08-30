@@ -15,6 +15,7 @@ async fn main() -> std::io::Result<()> {
                 "/create_token",
                 web::post().to(handlers::handle_create_token),
             )
+            .route("/create_repo", web::post().to(handlers::handle_create_repo))
     })
     .bind("127.0.0.1:8080")?
     .run()
