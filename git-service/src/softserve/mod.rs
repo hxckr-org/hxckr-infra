@@ -3,6 +3,7 @@ pub mod errors;
 pub mod handlers;
 pub mod models;
 pub mod ssh;
+pub mod tracing;
 
 use crate::softserve::models::{CreateRepoResponse, CreateTokenResponse, CreateUserResponse};
 use ssh::execute_command;
