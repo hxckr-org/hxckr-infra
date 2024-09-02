@@ -1,5 +1,5 @@
 mod softserve;
-use actix_web::{web, App, HttpServer};
+use actix_web::{middleware::Logger, web, App, HttpServer};
 use dotenv::dotenv;
 use softserve::handlers;
 use softserve::tracing::{init_tracing, tracing_logger};
