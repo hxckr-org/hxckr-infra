@@ -1,14 +1,16 @@
 mod softserve;
-use actix_web::{web, App, HttpServer};
+use actix_web::{middleware::Logger, web, App, HttpServer};
 use dotenv::dotenv;
 use softserve::handlers;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     dotenv().ok(); // Load .env file
+    env_logger::init(); // Initialize the logger
 
     HttpServer::new(|| {
         App::new()
+            .wrap(Logger::default())
             .route("/", web::get().to(handlers::test_connection))
             .route("/create_user", web::post().to(handlers::handle_create_user))
             .route(

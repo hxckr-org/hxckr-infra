@@ -28,7 +28,11 @@
       # Function to start and stop the PostgreSQL containers
       startPostgres = ''
         docker-compose --file ${dockerComposeFile} up -d
-        echo "PostgreSQL development database for Soft-Serve started"
+        if [ $? -eq 0 ]; then
+          echo "PostgreSQL development database for Soft-Serve started successfully"
+        else
+          echo "Failed to start PostgreSQL development database for Soft-Serve"
+        fi
       '';
       stopPostgres = ''
         docker-compose --file ${dockerComposeFile} down

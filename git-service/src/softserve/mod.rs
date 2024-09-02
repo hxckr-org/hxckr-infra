@@ -1,4 +1,5 @@
 pub mod config;
+pub mod errors;
 pub mod handlers;
 pub mod models;
 pub mod ssh;
@@ -8,10 +9,10 @@ use ssh::execute_command;
 
 pub fn create_user(username: &str) -> Result<CreateUserResponse, Box<dyn std::error::Error>> {
     let command = format!("user create {}", username);
-    execute_command(&command).map(|_| CreateUserResponse {
+    Ok(execute_command(&command).map(|_| CreateUserResponse {
         username: username.to_string(),
         message: format!("User {} created successfully on Soft Serve", username),
-    })
+    })?)
 }
 
 pub fn create_token(token_name: &str) -> Result<CreateTokenResponse, Box<dyn std::error::Error>> {
