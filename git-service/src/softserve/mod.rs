@@ -37,7 +37,7 @@ pub fn create_repo(
     let token_output = execute_command(&token_command)?;
     let token = token_output.trim().to_string();
 
-    let server_url = config::get_server_url();
+    let server_url = self::config::get_server_url();
 
     Ok(CreateRepoResponse {
         repo_name: repo_name.to_string(),

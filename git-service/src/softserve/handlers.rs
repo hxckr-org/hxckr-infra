@@ -10,7 +10,7 @@ pub async fn handle_create_user(
     user: web::Json<CreateUserRequest>,
 ) -> Result<HttpResponse, GitServiceError> {
     if check_user_exists(&user.username)? {
-        warn!("Attempt to create existing user: {}", user.username);
+        error!("Attempt to create an existing user: {}", user.username);
         return Err(GitServiceError::UserAlreadyExists(user.username.clone()));
     }
 
@@ -44,12 +44,12 @@ pub fn check_repo_exists(repo_name: &str) -> Result<bool, GitServiceError> {
     execute_command(command)
         .map(|output| {
             let repos: Vec<&str> = output.lines().collect();
-            Ok(repos.iter().any(|&repo| repo.trim() == repo_name))
+            repos.iter().any(|&repo| repo.to_lowercase().trim() == repo_name.trim().to_lowercase())
         })
         .map_err(|e| {
             error!("Failed to check repo existence: {}", e);
             GitServiceError::FailedToCheckRepoExistence(e.to_string())
-        })?
+        })
 }
 
 pub fn check_user_exists(username: &str) -> Result<bool, GitServiceError> {
@@ -57,19 +57,19 @@ pub fn check_user_exists(username: &str) -> Result<bool, GitServiceError> {
     execute_command(command)
         .map(|output| {
             let users: Vec<&str> = output.lines().collect();
-            Ok(users.iter().any(|&user| user.trim() == username))
+            users.iter().any(|&user_name| user_name.to_lowercase().trim() == username.trim().to_lowercase())
         })
         .map_err(|e| {
             error!("Failed to check user existence: {}", e);
             GitServiceError::FailedToCheckUserExistence(e.to_string())
-        })?
+        })
 }
 
 pub async fn handle_create_repo(
     repo_req: web::Json<CreateRepoRequest>,
 ) -> Result<HttpResponse, GitServiceError> {
     if check_repo_exists(&repo_req.repo_name)? {
-        warn!("Attempt to create existing repo: {}", repo_req.repo_name);
+        error!("Attempt to create an existing repo: {}", repo_req.repo_name);
         return Err(GitServiceError::RepositoryAlreadyExists(
             repo_req.repo_name.clone(),
         ));
