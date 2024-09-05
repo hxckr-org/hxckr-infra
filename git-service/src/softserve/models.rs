@@ -33,3 +33,8 @@ pub struct CreateRepoResponse {
     pub repo_name: String,
     pub repo_url: String,
 }
+
+#[derive(Serialize)]
+pub struct SetupWebhookRequest {
+    pub repo_name: String,
+}

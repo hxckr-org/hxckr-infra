@@ -1,6 +1,6 @@
+use crate::softserve::config;
 use crate::softserve::models::{CreateRepoResponse, CreateTokenResponse, CreateUserResponse};
 use crate::softserve::ssh::execute_command;
-use crate::softserve::config;
 
 pub fn create_user(username: &str) -> Result<CreateUserResponse, Box<dyn std::error::Error>> {
     let command = format!("user create {}", username);
@@ -31,18 +31,17 @@ pub fn create_repo(
     let token_output = execute_command(&token_command)?;
     let token = token_output.trim().to_string();
 
-    let server_url = config::get_server_url();
+    let server_url = self::config::get_server_url();
+    let scheme = if self::config::get_is_prod() { "https" } else { "http" };
 
     Ok(CreateRepoResponse {
         repo_name: repo_name.to_string(),
-        repo_url: format!("http://{}@{}/{}.git", token, server_url, repo_name),
+        repo_url: format!("{}://{}@{}/{}.git", scheme, token, server_url, repo_name),
     })
 }
 
 pub fn setup_webhook(repo_name: &str) -> Result<(), Box<dyn std::error::Error>> {
-    let server_url = config::get_server_url();
-    let server_port = config::get_server_port();
-    let webhook_url = format!("http://{}:{}/webhook", server_url, server_port);
+    let webhook_url = self::config::get_webhook_url();
 
     let webhook_command = format!(
         "repo webhook create {} {} -e push --content-type json",
