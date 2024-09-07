@@ -31,8 +31,8 @@ pub fn create_repo(
     let token_output = execute_command(&token_command)?;
     let token = token_output.trim().to_string();
 
-    let server_url = self::config::get_server_url();
-    let scheme = if self::config::get_is_prod() { "https" } else { "http" };
+    let server_url = config::get_server_url();
+    let scheme = if config::get_is_prod() { "https" } else { "http" };
 
     Ok(CreateRepoResponse {
         repo_name: repo_name.to_string(),
@@ -41,7 +41,7 @@ pub fn create_repo(
 }
 
 pub fn setup_webhook(repo_name: &str) -> Result<(), Box<dyn std::error::Error>> {
-    let webhook_url = self::config::get_webhook_url();
+    let webhook_url = config::get_webhook_url();
 
     let webhook_command = format!(
         "repo webhook create {} {} -e push --content-type json",
