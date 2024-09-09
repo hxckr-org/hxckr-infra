@@ -13,15 +13,22 @@ pub fn get_softserve_port() -> u16 {
 }
 
 pub fn get_server_url() -> String {
-    env::var("SERVER_URL").unwrap_or_else(|_| "http://localhost:23232".to_string())
+    env::var("SERVER_URL").unwrap_or_else(|_| "localhost".to_string())
 }
 
+pub fn get_webhook_url() -> String {
+    env::var("WEBHOOK_URL").unwrap_or_else(|_| "http://localhost:3000".to_string())
+}
 pub fn get_softserve_user() -> String {
     env::var("SOFTSERVE_USER").unwrap_or_else(|_| "admin".to_string())
 }
 
 pub fn get_softserve_key_path() -> String {
     env::var("SOFTSERVE_KEY_PATH").unwrap_or_else(|_| "~/.ssh/id_ed25519".to_string())
+}
+
+pub fn get_is_prod() -> bool {
+    env::var("IS_PROD").unwrap_or_else(|_| "false".to_string()) == "true"
 }
 
 pub fn expand_tilde(path: &str) -> PathBuf {

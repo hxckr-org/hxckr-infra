@@ -41,6 +41,8 @@ pub enum GitServiceError {
     ExitStatusError(String),
     #[error("Command failed with status {0}: {1}")]
     CommandFailedError(i32, String),
+    #[error("Failed to set up webhook: {0}")]
+    FailedToSetupWebhook(String),
 }
 
 impl ResponseError for GitServiceError {
@@ -74,6 +76,7 @@ impl ResponseError for GitServiceError {
             GitServiceError::ChannelCloseError(_) => StatusCode::INTERNAL_SERVER_ERROR,
             GitServiceError::ExitStatusError(_) => StatusCode::INTERNAL_SERVER_ERROR,
             GitServiceError::CommandFailedError(_, _) => StatusCode::INTERNAL_SERVER_ERROR,
+            GitServiceError::FailedToSetupWebhook(_) => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }
 }

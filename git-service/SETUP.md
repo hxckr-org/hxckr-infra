@@ -1,6 +1,6 @@
 # Git Service Project
 
-This folder host the codebase that provides a web service to interact with soft serve git server, allowing for soft serve command to be accesible over http.
+This folder host the codebase that provides a web service to interact with soft serve git server, allowing for soft serve command to be accessible over http.
 
 ## Prerequisites
 

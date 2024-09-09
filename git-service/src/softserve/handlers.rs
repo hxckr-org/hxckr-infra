@@ -1,10 +1,25 @@
 use super::errors::GitServiceError;
 use super::models::{CreateRepoRequest, CreateTokenRequest, CreateUserRequest};
 use super::ssh::execute_command;
-use super::{create_repo, create_token, create_user};
+use super::{create_repo, create_token, create_user, setup_webhook};
 use actix_web::{web, HttpResponse, Result};
 use serde_json::json;
 use tracing::{error, info, warn};
+
+pub fn check_user_exists(username: &str) -> Result<bool, GitServiceError> {
+    let command = "user list";
+    execute_command(command)
+        .map(|output| {
+            let users: Vec<&str> = output.lines().collect();
+            users
+                .iter()
+                .any(|&user_name| user_name.to_lowercase().trim() == username.trim().to_lowercase())
+        })
+        .map_err(|e| {
+            error!("Failed to check user existence: {}", e);
+            GitServiceError::FailedToCheckUserExistence(e.to_string())
+        })
+}
 
 pub async fn handle_create_user(
     user: web::Json<CreateUserRequest>,
@@ -44,24 +59,13 @@ pub fn check_repo_exists(repo_name: &str) -> Result<bool, GitServiceError> {
     execute_command(command)
         .map(|output| {
             let repos: Vec<&str> = output.lines().collect();
-            repos.iter().any(|&repo| repo.to_lowercase().trim() == repo_name.trim().to_lowercase())
+            repos
+                .iter()
+                .any(|&repo| repo.to_lowercase().trim() == repo_name.trim().to_lowercase())
         })
         .map_err(|e| {
             error!("Failed to check repo existence: {}", e);
             GitServiceError::FailedToCheckRepoExistence(e.to_string())
-        })
-}
-
-pub fn check_user_exists(username: &str) -> Result<bool, GitServiceError> {
-    let command = "user list";
-    execute_command(command)
-        .map(|output| {
-            let users: Vec<&str> = output.lines().collect();
-            users.iter().any(|&user_name| user_name.to_lowercase().trim() == username.trim().to_lowercase())
-        })
-        .map_err(|e| {
-            error!("Failed to check user existence: {}", e);
-            GitServiceError::FailedToCheckUserExistence(e.to_string())
         })
 }
 
@@ -78,7 +82,21 @@ pub async fn handle_create_repo(
     match create_repo(&repo_req.repo_name, &repo_req.repo_url) {
         Ok(response) => {
             info!("Repository created: {}", repo_req.repo_name);
-            Ok(HttpResponse::Ok().json(response))
+
+            // Set up webhook after repo creation
+            match setup_webhook(&repo_req.repo_name) {
+                Ok(_) => {
+                    info!("Webhook set up for repository: {}", repo_req.repo_name);
+                    Ok(HttpResponse::Ok().json(response))
+                }
+                Err(e) => {
+                   error!("Failed to set up webhook for {}: {}", repo_req.repo_name, e);
+                    Err(GitServiceError::FailedToSetupWebhook(format!(
+                        "Repository created successfully, but webhook setup failed: {}",
+                        e
+                    )))
+                }
+            }
         }
         Err(e) => {
             error!("Failed to create repo {}: {}", repo_req.repo_name, e);
