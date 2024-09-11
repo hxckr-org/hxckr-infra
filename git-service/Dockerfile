@@ -21,10 +21,12 @@ RUN rm ./target/release/deps/git_service*
 RUN cargo build --release
 
 # Final stage
-FROM debian:bullseye-slim
+FROM ubuntu:22.04
 
 # Install OpenSSL and ca-certificates
-RUN apt-get update && apt-get install -y openssl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && \
+    apt-get install -y openssl ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
 
 # Copy the build artifact from the builder stage
 COPY --from=builder /git-service/target/release/git-service .
