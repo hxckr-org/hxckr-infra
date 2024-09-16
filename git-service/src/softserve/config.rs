@@ -12,6 +12,13 @@ pub fn get_softserve_port() -> u16 {
         .expect("SOFTSERVE_PORT must be a number")
 }
 
+pub fn get_softserve_http_port() -> u16 {
+    env::var("SOFTSERVE_HTTP_PORT")
+        .unwrap_or_else(|_| "23232".to_string())
+        .parse()
+        .expect("SOFTSERVE_HTTP_PORT must be a number")
+}
+
 pub fn get_server_url() -> String {
     env::var("SERVER_URL").unwrap_or_else(|_| "localhost".to_string())
 }
