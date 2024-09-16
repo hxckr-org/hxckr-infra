@@ -90,7 +90,7 @@ pub async fn handle_create_repo(
                     Ok(HttpResponse::Ok().json(response))
                 }
                 Err(e) => {
-                   error!("Failed to set up webhook for {}: {}", repo_req.repo_name, e);
+                    error!("Failed to set up webhook for {}: {}", repo_req.repo_name, e);
                     Err(GitServiceError::FailedToSetupWebhook(format!(
                         "Repository created successfully, but webhook setup failed: {}",
                         e

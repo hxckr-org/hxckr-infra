@@ -19,7 +19,7 @@
               - POSTGRES_PASSWORD=$SOFT_SERVE_POSTGRES_PASSWORD
               - POSTGRES_DB=$SOFT_SERVE_POSTGRES_DB
             ports:
-              - 5432:5432
+              - $SOFT_SERVE_POSTGRES_PORT:5432
             volumes:
               - ''${SOFT_SERVE_POSTGRES_DATA}:/var/lib/postgresql/data
         volumes:
@@ -48,6 +48,7 @@
           diesel-cli
           openssl
           pkg-config
+          libiconv
         ];
         shellHook = ''
           # Change the prompt color to blue when in the Nix shell

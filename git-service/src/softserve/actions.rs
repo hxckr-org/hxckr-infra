@@ -32,11 +32,28 @@ pub fn create_repo(
     let token = token_output.trim().to_string();
 
     let server_url = config::get_server_url();
-    let scheme = if config::get_is_prod() { "https" } else { "http" };
+    let is_prod = config::get_is_prod();
+    let scheme = if config::get_is_prod() {
+        "https"
+    } else {
+        "http"
+    };
+
+    let formatted_url = if !is_prod {
+        // For local environment, include the Soft Serve port
+        let softserve_port = config::get_softserve_http_port();
+        format!(
+            "{}://{}@{}:{}/{}.git",
+            scheme, token, server_url, softserve_port, repo_name
+        )
+    } else {
+        // For production, use the server URL as is
+        format!("{}://{}@{}/{}.git", scheme, token, server_url, repo_name)
+    };
 
     Ok(CreateRepoResponse {
         repo_name: repo_name.to_string(),
-        repo_url: format!("{}://{}@{}/{}.git", scheme, token, server_url, repo_name),
+        repo_url: formatted_url,
     })
 }
 
