@@ -33,3 +33,19 @@ pub struct CreateRepoResponse {
     pub repo_name: String,
     pub repo_url: String,
 }
+
+#[derive(Serialize)]
+pub struct ListReposResponse {
+    pub repositories: Vec<String>,
+}
+
+#[derive(Deserialize)]
+pub struct DeleteRepoRequest {
+    pub repo_name: String,
+}
+
+#[derive(Serialize)]
+pub struct DeleteRepoResponse {
+    pub repo_name: String,
+    pub message: String,
+}

@@ -43,6 +43,12 @@ pub enum GitServiceError {
     CommandFailedError(i32, String),
     #[error("Failed to set up webhook: {0}")]
     FailedToSetupWebhook(String),
+    #[error("Failed to list repositories: {0}")]
+    FailedToListRepositories(String),
+    #[error("Failed to delete repository: {0}")]
+    FailedToDeleteRepository(String),
+    #[error("Repository not found: {0}")]
+    RepositoryNotFound(String),
 }
 
 impl ResponseError for GitServiceError {
@@ -77,6 +83,9 @@ impl ResponseError for GitServiceError {
             GitServiceError::ExitStatusError(_) => StatusCode::INTERNAL_SERVER_ERROR,
             GitServiceError::CommandFailedError(_, _) => StatusCode::INTERNAL_SERVER_ERROR,
             GitServiceError::FailedToSetupWebhook(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            GitServiceError::FailedToListRepositories(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            GitServiceError::FailedToDeleteRepository(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            GitServiceError::RepositoryNotFound(_) => StatusCode::NOT_FOUND,
         }
     }
 }

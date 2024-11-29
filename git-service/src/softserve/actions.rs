@@ -1,5 +1,8 @@
 use crate::softserve::config;
-use crate::softserve::models::{CreateRepoResponse, CreateTokenResponse, CreateUserResponse};
+use crate::softserve::models::{
+    CreateRepoResponse, CreateTokenResponse, CreateUserResponse, DeleteRepoResponse,
+    ListReposResponse,
+};
 use crate::softserve::ssh::execute_command;
 
 pub fn create_user(username: &str) -> Result<CreateUserResponse, Box<dyn std::error::Error>> {
@@ -67,4 +70,26 @@ pub fn setup_webhook(repo_name: &str) -> Result<(), Box<dyn std::error::Error>> 
 
     execute_command(&webhook_command)?;
     Ok(())
+}
+
+pub fn list_repos() -> Result<ListReposResponse, Box<dyn std::error::Error>> {
+    let command = "repo list";
+    let output = execute_command(command)?;
+    let repositories: Vec<String> = output
+        .lines()
+        .map(|line| line.trim().to_string())
+        .filter(|line| !line.is_empty())
+        .collect();
+
+    Ok(ListReposResponse { repositories })
+}
+
+pub fn delete_repo(repo_name: &str) -> Result<DeleteRepoResponse, Box<dyn std::error::Error>> {
+    let command = format!("repo delete {}", repo_name);
+    execute_command(&command)?;
+
+    Ok(DeleteRepoResponse {
+        repo_name: repo_name.to_string(),
+        message: format!("Repository {} deleted successfully", repo_name),
+    })
 }
