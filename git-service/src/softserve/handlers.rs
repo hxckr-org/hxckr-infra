@@ -1,10 +1,10 @@
 use super::errors::GitServiceError;
-use super::models::{CreateRepoRequest, CreateTokenRequest, CreateUserRequest};
+use super::models::{CreateRepoRequest, CreateTokenRequest, CreateUserRequest, DeleteRepoRequest};
 use super::ssh::execute_command;
-use super::{create_repo, create_token, create_user, setup_webhook};
+use super::{create_repo, create_token, create_user, delete_repo, list_repos, setup_webhook};
 use actix_web::{web, HttpResponse, Result};
 use serde_json::json;
-use tracing::{error, info, warn};
+use tracing::{error, info};
 
 pub fn check_user_exists(username: &str) -> Result<bool, GitServiceError> {
     let command = "user list";
@@ -103,6 +103,42 @@ pub async fn handle_create_repo(
             Err(GitServiceError::FailedToCreateRepository(e.to_string()))
         }
     }
+}
+
+pub async fn handle_list_repos() -> Result<HttpResponse, GitServiceError> {
+    list_repos()
+        .map(|response| {
+            info!("Listed {} repositories", response.repositories.len());
+            Ok(HttpResponse::Ok().json(response))
+        })
+        .map_err(|e| {
+            error!("Failed to list repositories: {}", e);
+            GitServiceError::FailedToListRepositories(e.to_string())
+        })?
+}
+
+pub async fn handle_delete_repo(
+    repo_req: web::Json<DeleteRepoRequest>,
+) -> Result<HttpResponse, GitServiceError> {
+    if !check_repo_exists(&repo_req.repo_name)? {
+        error!(
+            "Attempt to delete non-existent repo: {}",
+            repo_req.repo_name
+        );
+        return Err(GitServiceError::RepositoryNotFound(
+            repo_req.repo_name.clone(),
+        ));
+    }
+
+    delete_repo(&repo_req.repo_name)
+        .map(|response| {
+            info!("Repository deleted: {}", repo_req.repo_name);
+            Ok(HttpResponse::Ok().json(response))
+        })
+        .map_err(|e| {
+            error!("Failed to delete repo {}: {}", repo_req.repo_name, e);
+            GitServiceError::FailedToDeleteRepository(e.to_string())
+        })?
 }
 
 pub async fn test_connection() -> Result<HttpResponse, GitServiceError> {

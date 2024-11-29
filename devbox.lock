@@ -1,0 +1,82 @@
+{
+  "lockfile_version": "1",
+  "packages": {
+    "diesel-cli": {
+      "resolved": "github:NixOS/nixpkgs/75a52265bda7fd25e06e3a67dee3f0354e73243c#diesel-cli",
+      "source": "nixpkg"
+    },
+    "docker": {
+      "resolved": "github:NixOS/nixpkgs/75a52265bda7fd25e06e3a67dee3f0354e73243c#docker",
+      "source": "nixpkg"
+    },
+    "docker-compose": {
+      "resolved": "github:NixOS/nixpkgs/75a52265bda7fd25e06e3a67dee3f0354e73243c#docker-compose",
+      "source": "nixpkg"
+    },
+    "libiconv": {
+      "resolved": "github:NixOS/nixpkgs/75a52265bda7fd25e06e3a67dee3f0354e73243c#libiconv",
+      "source": "nixpkg"
+    },
+    "openssl": {
+      "resolved": "github:NixOS/nixpkgs/75a52265bda7fd25e06e3a67dee3f0354e73243c#openssl",
+      "source": "nixpkg"
+    },
+    "pkg-config": {
+      "resolved": "github:NixOS/nixpkgs/75a52265bda7fd25e06e3a67dee3f0354e73243c#pkg-config",
+      "source": "nixpkg"
+    },
+    "rustup": {
+      "plugin_version": "0.0.1",
+      "resolved": "github:NixOS/nixpkgs/75a52265bda7fd25e06e3a67dee3f0354e73243c#rustup",
+      "source": "nixpkg"
+    },
+    "soft-serve@0.7.6": {
+      "last_modified": "2024-11-16T04:25:12Z",
+      "resolved": "github:NixOS/nixpkgs/34a626458d686f1b58139620a8b2793e9e123bba#soft-serve",
+      "source": "devbox-search",
+      "version": "0.7.6",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/8bilhz0anv7hz32w8ddph2j863mngk0g-soft-serve-0.7.6",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/8bilhz0anv7hz32w8ddph2j863mngk0g-soft-serve-0.7.6"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/n78dzqdpd14pa21mfqi97dy9xs4qm26s-soft-serve-0.7.6",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/n78dzqdpd14pa21mfqi97dy9xs4qm26s-soft-serve-0.7.6"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/pwr3sazbkpywc5vaaadckxww06sizvnh-soft-serve-0.7.6",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/pwr3sazbkpywc5vaaadckxww06sizvnh-soft-serve-0.7.6"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/w29df9xs544m4apmnpkpagyv71059hyd-soft-serve-0.7.6",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/w29df9xs544m4apmnpkpagyv71059hyd-soft-serve-0.7.6"
+        }
+      }
+    }
+  }
+}

@@ -27,6 +27,11 @@ async fn main() -> std::io::Result<()> {
                 web::post().to(handlers::handle_create_token),
             )
             .route("/create_repo", web::post().to(handlers::handle_create_repo))
+            .route("/list_repos", web::get().to(handlers::handle_list_repos))
+            .route(
+                "/delete_repo",
+                web::delete().to(handlers::handle_delete_repo),
+            )
     })
     .bind(&bind_addr)?
     .run()
